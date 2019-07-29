@@ -1,4 +1,6 @@
 import persistence
+import connection
+from psycopg2 import sql
 
 
 def get_card_status(status_id):
