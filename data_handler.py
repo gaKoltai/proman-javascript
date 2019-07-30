@@ -12,13 +12,23 @@ def get_card_status(status_id):
     statuses = persistence.get_statuses()
     return next((status['title'] for status in statuses if status['id'] == str(status_id)), 'Unknown')
 
+@connection.connection_handler
+def get_boards(cursor):
+    cursor.execute("""
+                    SELECT * FROM boards;
+                    """)
 
-def get_boards():
-    """
-    Gather all boards
-    :return:
-    """
-    return persistence.get_boards(force=True)
+    boards = cursor.fetchall()
+
+    return boards
+
+@connection.connection_handler
+def create_board(cursor,board):
+    cursor.execute("""
+                    INSERT INTO boards
+                    (title)
+                    VALUES (%(title)s)
+                    """,{'title':board})
 
 
 def get_cards_for_board(board_id):

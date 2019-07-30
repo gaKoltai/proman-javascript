@@ -9,16 +9,25 @@ export let dataHandler = {
         // it is not called from outside
         // loads data from API, parses it and calls the callback with it
 
-        fetch(url, {
+        fetch(url,{
             method: 'GET',
             credentials: 'same-origin'
         })
         .then(response => response.json())  // parse the response as JSON
-        .then(json_response => callback(json_response));  // Call the `callback` with the returned object
+        .then(jsonResponse => callback(jsonResponse));  // Call the `callback` with the returned object
     },
     _api_post: function (url, data, callback) {
         // it is not called from outside
         // sends the data to the API, and calls callback function
+        fetch(url,{
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(callback)
+
     },
     init: function () {
     },
@@ -48,7 +57,8 @@ export let dataHandler = {
         // the card is retrieved and then the callback function is called with the card
     },
     createNewBoard: function (boardTitle, callback) {
-        // creates new board, saves it and calls the callback function with its data
+        this._api_post('/create-board', boardTitle, callback)
+
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data

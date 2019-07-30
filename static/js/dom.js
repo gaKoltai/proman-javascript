@@ -18,7 +18,7 @@ export let dom = {
         return elementToExtend.lastChild;
     },
     init: function () {
-        // This function should run once, when the page is loaded.
+        this.createBoard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -44,7 +44,24 @@ export let dom = {
             </ul>
         `;
 
+        document.querySelector('#boards').innerHTML = "";
         this._appendToElement(document.querySelector('#boards'), outerHtml);
+
+    },
+
+    createBoard: function() {
+
+        let button = document.getElementById('newBoard');
+        let boardName = document.getElementById('boardName');
+        button.addEventListener('click',()=>{
+            let title = boardName.value;
+            dataHandler.createNewBoard(`${title}`, () =>{
+                boardName.value = "";
+                this.loadBoards()
+            })
+
+        })
+
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
