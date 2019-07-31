@@ -41,6 +41,7 @@ export let dom = {
             title.innerHTML = `${board.title}`;
             container.appendChild(clone)
         }
+        
 
     },
 

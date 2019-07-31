@@ -23,12 +23,8 @@ def get_boards(cursor):
     return boards
 
 @connection.connection_handler
-def create_board(cursor,board):
-    cursor.execute("""
-                    INSERT INTO boards
-                    (title)
-                    VALUES (%(title)s)
-                    """,{'title':board})
+def create_board(cursor,board_id):
+   ujrahuzni/nemjo
 
 
 @connection.connection_handler
