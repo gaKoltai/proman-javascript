@@ -52,6 +52,7 @@ export let dataHandler = {
     },
     getCardsByBoardId: function (boardId, callback) {
         // the cards are retrieved and then the callback function is called with the cards
+        this._api_get(`/get-cards/${boardId}`,response=>callback(response))
     },
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
@@ -67,6 +68,9 @@ export let dataHandler = {
         let data = {'id': id, 'title': title};
         this._api_post('/rename-board', data, response => {callback();});
         console.log('data handler communication');
+    },
+    deleteBoard: function(boardId, callback) {
+        this._api_post('/delete-board', boardId, callback)
     }
     // here comes more features
 };

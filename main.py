@@ -49,7 +49,17 @@ def get_cards_for_board(board_id: int):
     All cards that belongs to a board
     :param board_id: id of the parent board
     """
-    return data_handler.get_cards_for_board(board_id)
+    cards = data_handler.get_cards_for_board(board_id)
+    return cards
+
+
+@app.route('/delete-board', methods=['POST'])
+def delete_board():
+
+    board_id = request.data
+    board_id = json.loads(board_id)
+
+    return data_handler.delete_board(board_id)
 
 
 def main():

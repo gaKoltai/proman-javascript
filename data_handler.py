@@ -43,12 +43,16 @@ def rename_board(cursor, board_data):
           'new_title': board_data['title']})
 
 
-def get_cards_for_board(board_id):
-    persistence.clear_cache()
-    all_cards = persistence.get_cards()
-    matching_cards = []
-    for card in all_cards:
-        if card['board_id'] == str(board_id):
-            card['status_id'] = get_card_status(card['status_id'])  # Set textual status for the card
-            matching_cards.append(card)
+@connection.connection_handler
+def get_cards_for_board(cursor, board_id):
+    cursor.execute("""SELECT * FROM cards
+                     WHERE board_id = %(id)s
+                     """, {'id': board_id})
+    matching_cards = cursor.fetchall()
     return matching_cards
+@connection.connection_handler
+def delete_board(cursor, boardId):
+    cursor.execute("""
+                    DELETE FROM boards
+                    WHERE id = %(id)s
+                    """, {'id':boardId})
