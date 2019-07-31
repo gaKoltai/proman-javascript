@@ -93,6 +93,7 @@ export let dom = {
                             let boardId = boardTitle.dataset.boardId;
                             let newTitle = event.target.value;
                             console.log(`id: ${boardId}, title: ${newTitle}`);
+                            dataHandler.renameBoard(boardId,newTitle,dom.loadBoards);
                         }
                     }
                 )

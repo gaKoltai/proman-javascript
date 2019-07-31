@@ -62,6 +62,11 @@ export let dataHandler = {
     },
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
+    },
+    renameBoard: function (id, title, callback) {
+        //todo
+        console.log('data handler communication');
+        callback();
     }
     // here comes more features
 };
