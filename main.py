@@ -36,6 +36,13 @@ def create_board():
     return data_handler.create_board(board)
 
 
+@app.route('/rename-board', methods=['POST'])
+@json_response
+def rename_board():
+    title = request.data
+    title = json.loads(title)
+    return data_handler.rename_board(title)
+
 
 @app.route("/get-cards/<int:board_id>")
 @json_response

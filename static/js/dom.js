@@ -39,6 +39,7 @@ export let dom = {
         for(let board of boards){
             let clone = document.importNode(boardTemplate.content, true);
             let title = clone.querySelector('.board-title');
+            title.setAttribute('data-board-id',board.id);
             title.innerHTML = `${board.title}`;
             container.appendChild(clone)
         }
@@ -89,7 +90,9 @@ export let dom = {
                 inputField.addEventListener('keydown', function (event) {
                         if(event.key === "Enter")
                         {
-                            console.log('enter pressed');
+                            let boardId = boardTitle.dataset.boardId;
+                            let newTitle = event.target.value;
+                            console.log(`id: ${boardId}, title: ${newTitle}`);
                         }
                     }
                 )
