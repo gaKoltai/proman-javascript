@@ -24,7 +24,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
-            dom.reanameBoard();
+            dom.renameBoard();
         });
     },
     showBoards: function (boards) {
@@ -66,7 +66,7 @@ export let dom = {
         // shows the cards of a board
         // it adds necessary event listeners also
     },
-    reanameBoard: function () {
+    renameBoard: function () {
         const boards = document.querySelector('.board-container');
         if (boards === null) {
                 console.log('no boards found');
@@ -79,7 +79,20 @@ export let dom = {
                 console.log('no span found');
             }
             renameBtn.addEventListener('click', function (event) {
-                event.target.innerHTML = "<input type=text>"
+                const boardTitle = event.target;
+                let titleText = boardTitle.textContent;
+                let inputField = document.createElement('input');
+                inputField.setAttribute('type','text');
+                inputField.setAttribute('value', titleText);
+                boardTitle.innerHTML = '';
+                boardTitle.appendChild(inputField);
+                inputField.addEventListener('keydown', function (event) {
+                        if(event.key === "Enter")
+                        {
+                            console.log('enter pressed');
+                        }
+                    }
+                )
             })
         }
     }
