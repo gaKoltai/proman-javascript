@@ -9,7 +9,7 @@ export let dom = {
 
         for (let childNode of fakeDiv.childNodes) {
             if (prepend) {
-                elementToExtend.prependChild(childNode);
+                elementToExtend.prepend(childNode);
             } else {
                 elementToExtend.appendChild(childNode);
             }
@@ -29,30 +29,25 @@ export let dom = {
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
+        let boardTemplate = document.getElementById('board-template');
+        let container = document.querySelector('.board-container');
+        container.innerHTML = "";
 
-        let boardList = '';
+
 
         for(let board of boards){
-            boardList += `
-                <li>${board.title}</li>
-            `;
+            let clone = document.importNode(boardTemplate.content, true);
+            let title = clone.querySelector('.board-title');
+            title.innerHTML = `${board.title}`;
+            container.appendChild(clone)
         }
-
-        const outerHtml = `
-            <ul class="board-container">
-                ${boardList}
-            </ul>
-        `;
-
-        document.querySelector('#boards').innerHTML = "";
-        this._appendToElement(document.querySelector('#boards'), outerHtml);
 
     },
 
     createBoard: function() {
 
-        let button = document.getElementById('newBoard');
-        let boardName = document.getElementById('boardName');
+        let button = document.getElementById('new-board');
+        let boardName = document.getElementById('board-name');
         button.addEventListener('click',()=>{
             let title = boardName.value;
             dataHandler.createNewBoard(`${title}`, () =>{
