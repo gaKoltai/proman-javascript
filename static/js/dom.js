@@ -90,6 +90,8 @@ export let dom = {
         }
     },
 
+    /* DELETES ONLY BOARD (no cards - yet) */
+
     deleteBoard: function() {
         let boards = document.getElementsByClassName('board');
 
