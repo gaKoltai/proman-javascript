@@ -36,15 +36,14 @@ def create_board():
     return data_handler.create_board(board)
 
 
-
-@app.route("/get-cards/<int:board_id>")
+@app.route('/delete-board', methods=['POST'])
 @json_response
-def get_cards_for_board(board_id: int):
-    """
-    All cards that belongs to a board
-    :param board_id: id of the parent board
-    """
-    return data_handler.get_cards_for_board(board_id)
+def delete_board():
+
+    board_id = request.data
+    board_id = json.loads(board_id)
+
+    return data_handler.delete_board(board_id)
 
 
 def main():

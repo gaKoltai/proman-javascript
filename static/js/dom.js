@@ -25,6 +25,7 @@ export let dom = {
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
             dom.toggleBoard();
+            dom.deleteBoard();
         });
     },
 
@@ -40,6 +41,7 @@ export let dom = {
             let clone = document.importNode(boardTemplate.content, true);
             let title = clone.querySelector('.board-title');
             clone.querySelector('.board').id = `board${board.id}`;
+            clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
             title.innerHTML = `${board.title}`;
             container.appendChild(clone);
         }
@@ -84,6 +86,19 @@ export let dom = {
                     toggleImage.className = "fas fa-chevron-down";
                     board.removeChild(board.children[1]);
                 }
+            })
+        }
+    },
+
+    deleteBoard: function() {
+        let boards = document.getElementsByClassName('board');
+
+        for (let board of boards) {
+            let _delete = board.querySelector('.board-delete');
+            _delete.addEventListener('click', function(){
+                dataHandler.deleteBoard(`${board.dataset.id}`, function() {
+                    dom.loadBoards();
+                })
             })
         }
     }
