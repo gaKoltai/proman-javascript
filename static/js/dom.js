@@ -24,8 +24,12 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
+            dom.toggleBoard();
+            dom.deleteBoard();
         });
     },
+
+
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
@@ -33,16 +37,14 @@ export let dom = {
         let container = document.querySelector('.board-container');
         container.innerHTML = "";
 
-
-
         for(let board of boards){
             let clone = document.importNode(boardTemplate.content, true);
             let title = clone.querySelector('.board-title');
+            clone.querySelector('.board').id = `board${board.id}`;
+            clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
             title.innerHTML = `${board.title}`;
-            container.appendChild(clone)
+            container.appendChild(clone);
         }
-        
-
     },
 
     createBoard: function() {
@@ -68,5 +70,40 @@ export let dom = {
         // it adds necessary event listeners also
         console.log(cards)
     },
-    // here comes more features
+    toggleBoard: function() {
+        let boards = document.getElementsByClassName('board');
+        let template = document.getElementById('board-columns');
+
+
+        for (let board of boards) {
+            let toggle = board.querySelector('.board-toggle');
+            let toggleImage = toggle.querySelector('i');
+            toggle.addEventListener('click',  function () {
+                let clone = document.importNode(template.content, true);
+
+                if (toggleImage.className === "fas fa-chevron-down"){
+                    board.appendChild(clone);
+                    toggleImage.className = "fas fa-chevron-up"
+                } else {
+                    toggleImage.className = "fas fa-chevron-down";
+                    board.removeChild(board.children[1]);
+                }
+            })
+        }
+    },
+
+    /* DELETES ONLY BOARD (no cards - yet) */
+
+    deleteBoard: function() {
+        let boards = document.getElementsByClassName('board');
+
+        for (let board of boards) {
+            let _delete = board.querySelector('.board-delete');
+            _delete.addEventListener('click', function(){
+                dataHandler.deleteBoard(`${board.dataset.id}`, function() {
+                    dom.loadBoards();
+                })
+            })
+        }
+    }
 };

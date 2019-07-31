@@ -23,8 +23,12 @@ def get_boards(cursor):
     return boards
 
 @connection.connection_handler
-def create_board(cursor,board_id):
-   ujrahuzni/nemjo
+def create_board(cursor,board):
+    cursor.execute("""
+                    INSERT INTO boards
+                    (title)
+                    VALUES (%(title)s)
+                    """,{'title':board})
 
 
 @connection.connection_handler
@@ -34,3 +38,9 @@ def get_cards_for_board(cursor, board_id):
                      """, {'id': board_id})
     matching_cards = cursor.fetchall()
     return matching_cards
+@connection.connection_handler
+def delete_board(cursor, boardId):
+    cursor.execute("""
+                    DELETE FROM boards
+                    WHERE id = %(id)s
+                    """, {'id':boardId})
