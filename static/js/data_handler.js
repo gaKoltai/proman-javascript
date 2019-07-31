@@ -64,9 +64,9 @@ export let dataHandler = {
         // creates new card, saves it and calls the callback function with its data
     },
     renameBoard: function (id, title, callback) {
-        //todo
+        let data = {'id': id, 'title': title};
+        this._api_post('/rename-board', data, response => {callback();});
         console.log('data handler communication');
-        callback();
     }
     // here comes more features
 };
