@@ -60,10 +60,12 @@ export let dom = {
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
+        dataHandler.getCardsByBoardId(boardId, this.showCards)
     },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
+        console.log(cards)
     },
     // here comes more features
 };
