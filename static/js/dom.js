@@ -106,7 +106,7 @@ export let dom = {
                 )
             })
         }
-    }
+    },
     // here comes more features
     toggleBoard: function() {
         let boards = document.getElementsByClassName('board');
