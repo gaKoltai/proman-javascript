@@ -46,7 +46,7 @@ export let dom = {
             let title = clone.querySelector('.board-title');
             clone.querySelector('.board').id = `${board.id}`;
             title.setAttribute('data-board-id',board.id);
-            clone.querySelector('.board').id = `board${board.id}`;
+            clone.querySelector('.board').id = `${board.id}`;
             clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
 
             title.innerHTML = `${board.title}`;
@@ -54,8 +54,6 @@ export let dom = {
         }
 
     },
-
-
 
     toggleCreateBoard: function() {
 
