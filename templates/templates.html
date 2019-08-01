@@ -1,13 +1,12 @@
 <template id="board-template">
     <section class="board">
-        <div class="board-header"><span class="board-title" id=""></span>
+        <div class="board-header"><span class="board-title"></span>
             <button class="board-add">Add Card</button>
             <button class="board-delete">Delete board</button>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
         </div>
     </section>
 </template>
-
 <template id="board-columns">
     <div class="board-columns">
         <div class="board-column">
@@ -26,6 +25,12 @@
             <div class="board-column-title">Done</div>
             <div class="board-column-content 4"></div>
         </div>
+    </div>
+</template>
+<template id="board-new">
+    <div>
+        <button id="new-board">Create board</button>
+        <input type="text" placeholder="Enter board name" id="board-name">
     </div>
 </template>
 

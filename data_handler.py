@@ -12,23 +12,36 @@ def get_card_status(status_id):
     statuses = persistence.get_statuses()
     return next((status['title'] for status in statuses if status['id'] == str(status_id)), 'Unknown')
 
+
 @connection.connection_handler
 def get_boards(cursor):
     cursor.execute("""
-                    SELECT * FROM boards;
+                    SELECT * FROM boards
+                    ORDER BY id;
                     """)
 
     boards = cursor.fetchall()
 
     return boards
 
+
 @connection.connection_handler
-def create_board(cursor,board):
+def create_board(cursor, board):
     cursor.execute("""
                     INSERT INTO boards
                     (title)
                     VALUES (%(title)s)
-                    """,{'title':board})
+                    """, {'title': board})
+
+
+@connection.connection_handler
+def rename_board(cursor, board_data):
+    cursor.execute("""
+                    UPDATE boards
+                    SET title = %(new_title)s
+                    WHERE id = %(board_id)s
+    """, {'board_id': board_data['id'],
+          'new_title': board_data['title']})
 
 
 @connection.connection_handler

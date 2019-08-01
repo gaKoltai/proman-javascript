@@ -18,18 +18,16 @@ export let dom = {
         return elementToExtend.lastChild;
     },
     init: function () {
-        this.createBoard();
+        this.toggleCreateBoard()
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function (boards) {
+        dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
+            dom.renameBoard();
             dom.toggleBoard();
             dom.deleteBoard();
         });
-
-
-
     },
 
 
@@ -44,11 +42,40 @@ export let dom = {
             let clone = document.importNode(boardTemplate.content, true);
             let title = clone.querySelector('.board-title');
             clone.querySelector('.board').id = `${board.id}`;
+            title.setAttribute('data-board-id',board.id);
+            clone.querySelector('.board').id = `board${board.id}`;
             clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
 
             title.innerHTML = `${board.title}`;
             container.appendChild(clone);
         }
+
+    },
+
+
+
+    toggleCreateBoard: function() {
+
+        let toggleButton = document.getElementById('toggle-create-board');
+        let template = document.getElementById('board-new');
+        let newBoardDiv = document.querySelector('.new-board');
+        let toggleImage = toggleButton.querySelector('i');
+
+        toggleButton.addEventListener('click', function (){
+            let clone = document.importNode(template.content, true);
+
+            if (toggleImage.className === 'fas fa-plus') {
+                toggleImage.className = 'fas fa-minus';
+                newBoardDiv.prepend(clone);
+                newBoardDiv.style.left = '55%';
+                dom.createBoard()
+            } else {
+                toggleImage.className = 'fas fa-plus';
+                newBoardDiv.removeChild(newBoardDiv.children[0]);
+                newBoardDiv.style.left ='73%';
+            }
+        })
+
     },
 
     createBoard: function () {
@@ -65,6 +92,7 @@ export let dom = {
         })
 
     },
+
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
 
@@ -91,8 +119,40 @@ export let dom = {
 
 
     },
-
-
+    renameBoard: function () {
+        const boards = document.querySelector('.board-container');
+        if (boards === null) {
+                console.log('no boards found');
+            return; }
+        console.log(boards.children.length);
+        for(let board of boards.children)
+        {
+            const renameBtn = board.querySelector('.board-title');
+            if(renameBtn === null){
+                console.log('no span found');
+            }
+            renameBtn.addEventListener('click', function (event) {
+                const boardTitle = event.target;
+                let titleText = boardTitle.textContent;
+                let inputField = document.createElement('input');
+                inputField.setAttribute('type','text');
+                inputField.setAttribute('value', titleText);
+                boardTitle.innerHTML = '';
+                boardTitle.appendChild(inputField);
+                inputField.addEventListener('keydown', function (event) {
+                        if(event.key === "Enter")
+                        {
+                            let boardId = boardTitle.dataset.boardId;
+                            let newTitle = event.target.value;
+                            console.log(`id: ${boardId}, title: ${newTitle}`);
+                            dataHandler.renameBoard(boardId,newTitle,dom.loadBoards);
+                        }
+                    }
+                )
+            })
+        }
+    },
+    // here comes more features
     toggleBoard: function() {
         let boards = document.getElementsByClassName('board');
         let template = document.getElementById('board-columns');

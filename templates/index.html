@@ -14,10 +14,14 @@
 <body>
     {% include 'templates.html' %}
     <h1>ProMan</h1>
+    <div class="new-board">
+        <div>
+           <button class="toggle-create-board" id="toggle-create-board"><i class="fas fa-plus"></i></button>
+        </div>
+    </div>
 
     <div id="container">
-        <input type="text" placeholder="Enter board name" id="board-name">
-        <button id="new-board">Create board</button>
+
         <div class="board-container">
         </div>
     </div>

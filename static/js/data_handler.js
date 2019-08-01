@@ -50,7 +50,7 @@ export let dataHandler = {
     getStatus: function (statusId, callback) {
         // the status is retrieved and then the callback function is called with the status
     },
-    getCardsByBoardId: function (boardId,callback) {
+    getCardsByBoardId: function (boardId, callback) {
         // the cards are retrieved and then the callback function is called with the cards
         this._api_get(`/get-cards/${boardId}`,response=>callback(response))
     },
@@ -64,7 +64,13 @@ export let dataHandler = {
     createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },
+    renameBoard: function (id, title, callback) {
+        let data = {'id': id, 'title': title};
+        this._api_post('/rename-board', data, response => {callback();});
+        console.log('data handler communication');
+    },
     deleteBoard: function(boardId, callback) {
         this._api_post('/delete-board', boardId, callback)
     }
+    // here comes more features
 };

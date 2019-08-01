@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS public.statuses;
 DROP SEQUENCE IF EXISTS public.statuses_id_seq;
 CREATE TABLE statuses (
     id serial not null ,
+    board_id integer,
     title text
 );
 
@@ -34,24 +35,34 @@ ALTER TABLE ONLY cards
 ALTER TABLE ONLY statuses
     ADD CONSTRAINT pk_statuses_id PRIMARY KEY (id);
 
+ALTER TABLE ONLY cards
+    ADD CONSTRAINT fk_board_id FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE ;
+ALTER TABLE ONLY cards
+    ADD CONSTRAINT fk_status_id FOREIGN KEY (status_id) REFERENCES statuses(id) ON DELETE CASCADE ;
+ALTER TABLE ONLY statuses
+    ADD CONSTRAINT fk_board_id FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE ;
 
-INSERT INTO boards VALUES (1,"Board 1");
-INSERT INTO boards VALUES (2,"Board 2");
 
-INSERT INTO cards VALUES (1,1,"new card 1",0,0);
-INSERT INTO cards VALUES (2,1,"new card 2",0,1);
-INSERT INTO cards VALUES (3,1,"in progress card",1,0);
-INSERT INTO cards VALUES (4,1,"planning",2,0);
-INSERT INTO cards VALUES (5,1,"done card 1",3,0);
-INSERT INTO cards VALUES (6,1,"done card 1",3,1);
-INSERT INTO cards VALUES (7,2,"new card 1",0,0);
-INSERT INTO cards VALUES (8,2,"new card 2",0,1);
-INSERT INTO cards VALUES (9,2,"in progress card",1,0);
-INSERT INTO cards VALUES (10,2,"planning",2,0);
-INSERT INTO cards VALUES (11,2,"done card 1",3,0);
-INSERT INTO cards VALUES (12,2,"done card 1",3,1);
+INSERT INTO boards VALUES (1,'Board 1');
+INSERT INTO boards VALUES (2,'Board 2');
+INSERT INTO boards VALUES (3,'Board 3');
+INSERT INTO boards VALUES (4,'Board 4');
 
-INSERT INTO statuses VALUES (0,new);
-INSERT INTO statuses VALUES(1,"in progress");
-INSERT INTO statuses VALUES(2,testing);
-INSERT INTO statuses VALUES(3,done);
+INSERT INTO statuses VALUES (0,1,'new');
+INSERT INTO statuses VALUES(1,2,'in progress');
+INSERT INTO statuses VALUES(2,3,'testing');
+INSERT INTO statuses VALUES(3,4,'done');
+
+INSERT INTO cards VALUES (1,1,'new card 1',0,0);
+INSERT INTO cards VALUES (2,1,'new card 2',0,1);
+INSERT INTO cards VALUES (3,1,'in progress card',1,0);
+INSERT INTO cards VALUES (4,1,'planning',2,0);
+INSERT INTO cards VALUES (5,1,'done card 1',3,0);
+INSERT INTO cards VALUES (6,1,'done card 1',3,1);
+INSERT INTO cards VALUES (7,2,'new card 1',0,0);
+INSERT INTO cards VALUES (8,2,'new card 2',0,1);
+INSERT INTO cards VALUES (9,2,'in progress card',1,0);
+INSERT INTO cards VALUES (10,2,'planning',2,0);
+INSERT INTO cards VALUES (11,2,'done card 1',3,0);
+INSERT INTO cards VALUES (12,2,'done card 1',3,1);
+
