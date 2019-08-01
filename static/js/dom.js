@@ -26,9 +26,8 @@ export let dom = {
             dom.showBoards(boards);
             dom.showColumns();
             dom.renameBoard();
-            dom.toggleBoard();
             dom.deleteBoard();
-            dom.createCard()
+            dom.createCard();
         });
     },
 
@@ -81,6 +80,7 @@ export let dom = {
 
                 }
                 board.appendChild(columnsClone);
+                dom.toggleBoard();
             });
 
         }
@@ -133,14 +133,12 @@ export let dom = {
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
-        console.log(cards);
         let cardTemplate = document.querySelector('#card-template');
 
         for (let card of cards) {
 
             let clone = document.importNode(cardTemplate.content, true);
-            console.log(card.board_id);
-            let columnToPopulate = document.getElementById(`${card.board_id}`).getElementsByClassName(`${card.status_id}`)[0];
+            let columnToPopulate = document.querySelector(`[data-status-id='${card.status_id}']`);
 
             let title = clone.querySelector('.card-title');
             title.textContent = `${card.title}`;
@@ -165,7 +163,7 @@ export let dom = {
             createCardButton.addEventListener('click', () => {
                 createCardButton.style.display = "none";
                 input.style.display = "inline";
-                input.addEventListener('keyup', function(event){
+                input.addEventListener('keydown', function(event){
                     if (event.key === "Enter") {
                         let cardTitle = input.value;
                         dataHandler.createNewCard(`${cardTitle}`, `${board.id}`, function () {
@@ -216,23 +214,23 @@ export let dom = {
     },
     // here comes more features
     toggleBoard: function() {
+
         let boards = document.getElementsByClassName('board');
-        let template = document.getElementById('board-columns');
 
 
         for (let board of boards) {
             let toggle = board.querySelector('.board-toggle');
             let toggleImage = toggle.querySelector('i');
+            let columnContainer = board.querySelector('.board-columns');
             toggle.addEventListener('click',  function () {
-                let clone = document.importNode(template.content, true);
 
                 if (toggleImage.className === "fas fa-chevron-down"){
-                    board.appendChild(clone);
+                    columnContainer.style.display = "flex";
                     toggleImage.className = "fas fa-chevron-up";
-                    dom.loadCards(`${board.id}`)
                 } else {
+                    columnContainer.style.display = "none";
                     toggleImage.className = "fas fa-chevron-down";
-                    board.removeChild(board.children[1]);
+
                 }
             })
         }
