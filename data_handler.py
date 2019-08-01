@@ -54,7 +54,6 @@ def create_statuses(cursor, board_id):
                     """, {'board_id': board_id})
 
 
-
 @connection.connection_handler
 def rename_board(cursor, board_data):
     cursor.execute("""
