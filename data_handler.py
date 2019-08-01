@@ -78,3 +78,10 @@ def create_card(cursor, card_title, board_id):
                     (board_id, title, status_id, card_order)
                     VALUES(%(board_id)s, %(title)s, %(status_id)s, 0)
                     """, {'board_id': board_id, 'title': card_title, 'status_id': status_id })
+
+
+@connection.connection_handler
+def delete_card(cursor, cardId):
+    cursor.execute("""
+                    DELETE FROM cards WHERE id = %(id)s
+                    """,{'id': cardId})
