@@ -2,11 +2,13 @@
     <section class="board">
         <div class="board-header"><span class="board-title"></span>
             <button class="board-add">Add Card</button>
+            <input type="text" placeholder="Enter card name" class="card-create-input">
             <button class="board-delete">Delete board</button>
             <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
         </div>
     </section>
 </template>
+
 <template id="board-columns">
     <div class="board-columns">
 
@@ -17,5 +19,19 @@
     <div class="board-column">
         <div class="board-column-title"></div>
         <div class="board-column-content"></div>
+    </div>
+</template>
+
+<template id="board-new">
+    <div>
+        <button id="new-board">Create board</button>
+        <input type="text" placeholder="Enter board name" id="board-name">
+    </div>
+</template>
+
+<template id="card-template">
+    <div class="card">
+        <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+        <div class="card-title">Card 2</div>
     </div>
 </template>

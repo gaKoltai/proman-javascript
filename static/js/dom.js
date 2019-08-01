@@ -18,7 +18,7 @@ export let dom = {
         return elementToExtend.lastChild;
     },
     init: function () {
-        this.createBoard();
+        this.toggleCreateBoard()
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -28,6 +28,7 @@ export let dom = {
             dom.renameBoard();
             dom.toggleBoard();
             dom.deleteBoard();
+            dom.createCard()
         });
     },
 
@@ -39,18 +40,15 @@ export let dom = {
         let container = document.querySelector('.board-container');
         container.innerHTML = "";
 
-
-
-        for(let board of boards){
+        for (let board of boards) {
             let clone = document.importNode(boardTemplate.content, true);
             let title = clone.querySelector('.board-title');
+            clone.querySelector('.board').id = `${board.id}`;
             title.setAttribute('data-board-id',board.id);
-            clone.querySelector('.board').id = `board${board.id}`;
             clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
+
             title.innerHTML = `${board.title}`;
             container.appendChild(clone);
-
-
         }
 
     },
@@ -88,6 +86,30 @@ export let dom = {
         }
     },
 
+    toggleCreateBoard: function() {
+
+        let toggleButton = document.getElementById('toggle-create-board');
+        let template = document.getElementById('board-new');
+        let newBoardDiv = document.querySelector('.new-board');
+        let toggleImage = toggleButton.querySelector('i');
+
+        toggleButton.addEventListener('click', function (){
+            let clone = document.importNode(template.content, true);
+
+            if (toggleImage.className === 'fas fa-plus') {
+                toggleImage.className = 'fas fa-minus';
+                newBoardDiv.prepend(clone);
+                newBoardDiv.style.left = '55%';
+                dom.createBoard()
+            } else {
+                toggleImage.className = 'fas fa-plus';
+                newBoardDiv.removeChild(newBoardDiv.children[0]);
+                newBoardDiv.style.left ='73%';
+            }
+        })
+
+    },
+
     createBoard: function() {
 
         let button = document.getElementById('new-board');
@@ -102,18 +124,68 @@ export let dom = {
         })
 
     },
+
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
-        dataHandler.getCardsByBoardId(boardId, this.showCards)
+
+        dataHandler.getCardsByBoardId(boardId, dom.showCards)
     },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
+        console.log(cards);
+        let cardTemplate = document.querySelector('#card-template');
+
+        for (let card of cards) {
+
+            let clone = document.importNode(cardTemplate.content, true);
+            console.log(card.board_id);
+            let columnToPopulate = document.getElementById(`${card.board_id}`).getElementsByClassName(`${card.status_id}`)[0];
+
+            let title = clone.querySelector('.card-title');
+            title.textContent = `${card.title}`;
+            clone.querySelector(".card-remove").addEventListener('click',function() {dataHandler.deleteCard(`${card.id}`, dom.loadBoards)});
+            columnToPopulate.appendChild(clone);
+
+        }
+
+
+
     },
+
+    createCard : function(){
+
+        const boards = document.getElementsByClassName('board');
+
+        for (let board of boards) {
+
+            let createCardButton = board.querySelector('.board-add');
+            let input = board.querySelector('.card-create-input');
+
+            createCardButton.addEventListener('click', () => {
+                createCardButton.style.display = "none";
+                input.style.display = "inline";
+                input.addEventListener('keyup', function(event){
+                    if (event.key === "Enter") {
+                        let cardTitle = input.value;
+                        dataHandler.createNewCard(`${cardTitle}`, `${board.id}`, function () {
+                            dom.loadCards(`${board.id}`);
+                            input.value = "";
+                            input.style.display = "none";
+                            createCardButton.style.display = "inline";
+                        });
+                    }
+                })
+
+            })
+        }
+
+
+    },
+
     renameBoard: function () {
         const boards = document.querySelector('.board-container');
         if (boards === null) {
-                console.log('no boards found');
             return; }
         for(let board of boards.children)
         {
@@ -145,17 +217,22 @@ export let dom = {
     // here comes more features
     toggleBoard: function() {
         let boards = document.getElementsByClassName('board');
+        let template = document.getElementById('board-columns');
+
 
         for (let board of boards) {
             let toggle = board.querySelector('.board-toggle');
             let toggleImage = toggle.querySelector('i');
             toggle.addEventListener('click',  function () {
-                if (toggleImage.className === "fas fa-chevron-down"){
+                let clone = document.importNode(template.content, true);
 
+                if (toggleImage.className === "fas fa-chevron-down"){
+                    board.appendChild(clone);
                     toggleImage.className = "fas fa-chevron-up";
+                    dom.loadCards(`${board.id}`)
                 } else {
                     toggleImage.className = "fas fa-chevron-down";
-
+                    board.removeChild(board.children[1]);
                 }
             })
         }

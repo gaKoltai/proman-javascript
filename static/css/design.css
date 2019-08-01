@@ -30,11 +30,29 @@ button{
     font-size: 14px;
     font-family: sans-serif;
     padding: 4px 10px;
+    border-radius: 3px;
+}
+
+input {
+    border-radius: 3px;
+    padding-left: 10px;
 }
 
 .board-container{
     max-width: 960px;
     margin: 0 auto;
+}
+
+.new-board {
+    position: relative;
+    left: 73%;
+    display: flex;
+
+}
+
+.new-board input {
+    margin-left: 10px;
+    margin-right: 5px;
 }
 
 section.board{
@@ -126,4 +144,8 @@ section.board{
 
 .card-title{
     padding-right: 16px;
+}
+
+.card-create-input {
+    display: none;
 }
