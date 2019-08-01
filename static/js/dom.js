@@ -113,6 +113,7 @@ export let dom = {
 
             let title = clone.querySelector('.card-title');
             title.textContent = `${card.title}`;
+            clone.querySelector(".card-remove").addEventListener('click',function() {dataHandler.deleteCard(`${card.id}`, dom.loadBoards)});
             columnToPopulate.appendChild(clone);
 
         }
