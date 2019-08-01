@@ -37,7 +37,6 @@ export let dom = {
         let boardTemplate = document.getElementById('board-template');
         let container = document.querySelector('.board-container');
         container.innerHTML = "";
-        console.log(boards);
 
 
 
@@ -68,7 +67,7 @@ export let dom = {
             if (toggleImage.className === 'fas fa-plus') {
                 toggleImage.className = 'fas fa-minus';
                 newBoardDiv.prepend(clone);
-                newBoardDiv.style.left = '56%';
+                newBoardDiv.style.left = '55%';
                 dom.createBoard()
             } else {
                 toggleImage.className = 'fas fa-plus';

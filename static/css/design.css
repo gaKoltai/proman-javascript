@@ -30,6 +30,7 @@ button{
     font-size: 14px;
     font-family: sans-serif;
     padding: 4px 10px;
+    border-radius: 3px;
 }
 
 input {
@@ -47,6 +48,11 @@ input {
     left: 73%;
     display: flex;
 
+}
+
+.new-board input {
+    margin-left: 10px;
+    margin-right: 5px;
 }
 
 section.board{
