@@ -59,3 +59,22 @@ def delete_board(cursor, boardId):
                     DELETE FROM boards
                     WHERE id = %(id)s
                     """, {'id':boardId})
+
+
+@connection.connection_handler
+def create_card(cursor, card_title, board_id):
+
+    cursor.execute("""
+                    SELECT id FROM statuses
+                    WHERE board_id = %(board_id)s
+                    ORDER BY id
+                    LIMIT 1;
+                    """,{'board_id': board_id})
+
+    status_id = cursor.fetchall()[0]['id']
+
+    cursor.execute("""
+                    INSERT INTO cards
+                    (board_id, title, status_id, card_order)
+                    VALUES(%(board_id)s, %(title)s, %(status_id)s, 0)
+                    """, {'board_id': board_id, 'title': card_title, 'status_id': status_id })

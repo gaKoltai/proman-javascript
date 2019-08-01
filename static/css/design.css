@@ -145,3 +145,7 @@ section.board{
 .card-title{
     padding-right: 16px;
 }
+
+.card-create-input {
+    display: none;
+}

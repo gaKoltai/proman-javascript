@@ -27,6 +27,7 @@ export let dom = {
             dom.renameBoard();
             dom.toggleBoard();
             dom.deleteBoard();
+            dom.createCard()
         });
 
 
@@ -46,7 +47,6 @@ export let dom = {
             let title = clone.querySelector('.board-title');
             clone.querySelector('.board').id = `${board.id}`;
             title.setAttribute('data-board-id',board.id);
-            clone.querySelector('.board').id = `${board.id}`;
             clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
 
             title.innerHTML = `${board.title}`;
@@ -120,12 +120,41 @@ export let dom = {
 
 
     },
+
+    createCard : function(){
+
+        const boards = document.getElementsByClassName('board');
+
+        for (let board of boards) {
+
+            let createCardButton = board.querySelector('.board-add');
+            let input = board.querySelector('.card-create-input');
+
+            createCardButton.addEventListener('click', () => {
+                createCardButton.style.display = "none";
+                input.style.display = "inline";
+                input.addEventListener('keyup', function(event){
+                    if (event.key === "Enter") {
+                        let cardTitle = input.value;
+                        dataHandler.createNewCard(`${cardTitle}`, `${board.id}`, function () {
+                            dom.loadCards(`${board.id}`);
+                            input.value = "";
+                            input.style.display = "none";
+                            createCardButton.style.display = "inline";
+                        });
+                    }
+                })
+
+            })
+        }
+
+
+    },
+
     renameBoard: function () {
         const boards = document.querySelector('.board-container');
         if (boards === null) {
-                console.log('no boards found');
             return; }
-        console.log(boards.children.length);
         for(let board of boards.children)
         {
             const renameBtn = board.querySelector('.board-title');
