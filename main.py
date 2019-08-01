@@ -24,14 +24,18 @@ def get_boards():
     return data_handler.get_boards()
 
 
+@app.route("/get-statuses/<board_id>")
+@json_response
+def get_statuses(board_id):
+    return data_handler.get_statuses(board_id)
+
+
 @app.route('/create-board', methods=['POST'])
 @json_response
 def create_board():
     board = request.data
-
     board = json.loads(board)
-
-    return data_handler.create_board(board)
+    return data_handler.board_create(board)
 
 
 @app.route('/rename-board', methods=['POST'])

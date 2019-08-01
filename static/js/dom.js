@@ -119,6 +119,17 @@ export let dom = {
             toggle.addEventListener('click',  function () {
                 let clone = document.importNode(template.content, true);
 
+
+                dataHandler.getStatuses(board.dataset.id, function (statusData) {
+                    const statusId = statusData.id;
+                    const statusTitle = statusData.title;
+                    const statusIdDom = clone.querySelector('.board-column-content');
+                    statusIdDom.setAttribute('data-status-id', `${statusId}`);
+                    const statusTitleDom = clone.querySelector('.board-column-title');
+                    statusTitleDom.textContent = statusTitle;
+                });
+
+
                 if (toggleImage.className === "fas fa-chevron-down"){
                     board.appendChild(clone);
                     toggleImage.className = "fas fa-chevron-up"

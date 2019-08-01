@@ -24,13 +24,35 @@ def get_boards(cursor):
     return boards
 
 
+def board_create(board):
+    board_id = create_board(board)
+    board_id = board_id[0]['id']
+    create_statuses(board_id)
+
+
 @connection.connection_handler
 def create_board(cursor, board):
     cursor.execute("""
                     INSERT INTO boards
                     (title)
                     VALUES (%(title)s)
+                    RETURNING id;
                     """, {'title': board})
+    return cursor.fetchall()
+
+
+@connection.connection_handler
+def create_statuses(cursor, board_id):
+    cursor.execute("""
+                    INSERT INTO statuses
+                    (title, board_id)
+                    VALUES 
+                    ('New', %(board_id)s),
+                    ('In Progress', %(board_id)s),
+                    ('Testing', %(board_id)s),
+                    ('Done', %(board_id)s);
+                    """, {'board_id': board_id})
+
 
 
 @connection.connection_handler
@@ -50,6 +72,18 @@ def get_cards_for_board(cursor, board_id):
                      """, {'id': board_id})
     matching_cards = cursor.fetchall()
     return matching_cards
+
+
+@connection.connection_handler
+def get_statuses(cursor, board_id):
+    cursor.execute("""
+                    SELECT id, title FROM statuses
+                    WHERE board_id = %(board_id)s
+    """, {'board_id': board_id})
+    statuses = cursor.fetchall()
+    return statuses
+
+
 @connection.connection_handler
 def delete_board(cursor, boardId):
     cursor.execute("""
