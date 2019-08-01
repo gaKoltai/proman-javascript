@@ -18,7 +18,7 @@ export let dom = {
         return elementToExtend.lastChild;
     },
     init: function () {
-        this.createBoard();
+        this.toggleCreateBoard()
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -37,6 +37,7 @@ export let dom = {
         let boardTemplate = document.getElementById('board-template');
         let container = document.querySelector('.board-container');
         container.innerHTML = "";
+        console.log(boards);
 
 
 
@@ -49,6 +50,32 @@ export let dom = {
             title.innerHTML = `${board.title}`;
             container.appendChild(clone);
         }
+
+    },
+
+
+
+    toggleCreateBoard: function() {
+
+        let toggleButton = document.getElementById('toggle-create-board');
+        let template = document.getElementById('board-new');
+        let newBoardDiv = document.querySelector('.new-board');
+        let toggleImage = toggleButton.querySelector('i');
+
+        toggleButton.addEventListener('click', function (){
+            let clone = document.importNode(template.content, true);
+
+            if (toggleImage.className === 'fas fa-plus') {
+                toggleImage.className = 'fas fa-minus';
+                newBoardDiv.prepend(clone);
+                newBoardDiv.style.left = '56%';
+                dom.createBoard()
+            } else {
+                toggleImage.className = 'fas fa-plus';
+                newBoardDiv.removeChild(newBoardDiv.children[0]);
+                newBoardDiv.style.left ='73%';
+            }
+        })
 
     },
 
@@ -66,6 +93,7 @@ export let dom = {
         })
 
     },
+
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
         dataHandler.getCardsByBoardId(boardId, this.showCards)

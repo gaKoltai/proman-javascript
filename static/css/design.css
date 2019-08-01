@@ -32,9 +32,21 @@ button{
     padding: 4px 10px;
 }
 
+input {
+    border-radius: 3px;
+    padding-left: 10px;
+}
+
 .board-container{
     max-width: 960px;
     margin: 0 auto;
+}
+
+.new-board {
+    position: relative;
+    left: 73%;
+    display: flex;
+
 }
 
 section.board{
