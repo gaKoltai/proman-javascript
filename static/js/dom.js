@@ -24,6 +24,7 @@ export let dom = {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function(boards){
             dom.showBoards(boards);
+            dom.showColumns();
             dom.renameBoard();
             dom.toggleBoard();
             dom.deleteBoard();
@@ -48,8 +49,40 @@ export let dom = {
             clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
             title.innerHTML = `${board.title}`;
             container.appendChild(clone);
+
+
         }
 
+    },
+
+    showColumns: function(){
+        let boards = document.getElementsByClassName('board');
+        for (let board of boards) {
+
+            let columnsTemplate = document.getElementById('board-columns');
+            let columnTemplate = document.getElementById('board-column');
+            let columnsClone = document.importNode(columnsTemplate.content, true);
+
+            dataHandler.getStatuses(board.dataset.id, function (statusData) {
+
+                for (let status of statusData) {
+                    let columnClone = document.importNode(columnTemplate.content, true);
+
+                    const statusId = status.id;
+                    const statusTitle = status.title;
+
+                    const statusIdDom = columnClone.querySelector('.board-column-content');
+                    statusIdDom.setAttribute('data-status-id', `${statusId}`);
+
+                    const statusTitleDom = columnClone.querySelector('.board-column-title');
+                    statusTitleDom.children.textContent = statusTitle;
+
+                    columnsClone.appendChild(columnClone);
+                }
+            });
+
+            board.appendChild(columnsClone);
+        }
     },
 
     createBoard: function() {
@@ -79,7 +112,6 @@ export let dom = {
         if (boards === null) {
                 console.log('no boards found');
             return; }
-        console.log(boards.children.length);
         for(let board of boards.children)
         {
             const renameBtn = board.querySelector('.board-title');
@@ -110,32 +142,19 @@ export let dom = {
     // here comes more features
     toggleBoard: function() {
         let boards = document.getElementsByClassName('board');
-        let template = document.getElementById('board-columns');
+
 
 
         for (let board of boards) {
             let toggle = board.querySelector('.board-toggle');
             let toggleImage = toggle.querySelector('i');
             toggle.addEventListener('click',  function () {
-                let clone = document.importNode(template.content, true);
-
-
-                dataHandler.getStatuses(board.dataset.id, function (statusData) {
-                    const statusId = statusData.id;
-                    const statusTitle = statusData.title;
-                    const statusIdDom = clone.querySelector('.board-column-content');
-                    statusIdDom.setAttribute('data-status-id', `${statusId}`);
-                    const statusTitleDom = clone.querySelector('.board-column-title');
-                    statusTitleDom.textContent = statusTitle;
-                });
-
-
                 if (toggleImage.className === "fas fa-chevron-down"){
-                    board.appendChild(clone);
-                    toggleImage.className = "fas fa-chevron-up"
+
+                    toggleImage.className = "fas fa-chevron-up";
                 } else {
                     toggleImage.className = "fas fa-chevron-down";
-                    board.removeChild(board.children[1]);
+
                 }
             })
         }
