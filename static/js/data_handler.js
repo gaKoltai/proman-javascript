@@ -71,6 +71,12 @@ export let dataHandler = {
     },
     deleteBoard: function(boardId, callback) {
         this._api_post('/delete-board', boardId, callback)
+    },
+
+    deleteCard: function(cardId, callback) {
+        this._api_post('/delete-card', cardId, callback)
+
     }
-    // here comes more features
+
+     // here comes more features
 };

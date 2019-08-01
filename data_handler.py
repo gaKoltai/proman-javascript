@@ -59,3 +59,10 @@ def delete_board(cursor, boardId):
                     DELETE FROM boards
                     WHERE id = %(id)s
                     """, {'id':boardId})
+
+
+@connection.connection_handler
+def delete_card(cursor, cardId):
+    cursor.execute("""
+                    DELETE FROM cards WHERE id = %(id)s
+                    """,{'id': cardId})
