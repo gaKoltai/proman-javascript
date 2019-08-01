@@ -124,3 +124,13 @@ def delete_card(cursor, cardId):
     cursor.execute("""
                     DELETE FROM cards WHERE id = %(id)s
                     """,{'id': cardId})
+
+
+
+@connection.connection_handler
+def rename_status(cursor, status_id, status_title):
+    cursor.execute("""
+                    UPDATE statuses
+                    SET title = %(title)s
+                    WHERE id = %(id)s                    
+                    """, {'title': status_title, 'id': status_id})

@@ -91,6 +91,17 @@ def create_card(board_id: int):
 
     return data_handler.create_card(card_title, board_id)
 
+
+@app.route('/rename-status/<int:status_id>', methods=['POST'])
+@json_response
+def rename_status(status_id: int):
+    status_title = request.data
+    status_title = json.loads(status_title)
+
+    return data_handler.rename_status(status_id, status_title)
+
+
+
 def main():
     app.run(debug=True)
 

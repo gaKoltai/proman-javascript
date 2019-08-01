@@ -81,6 +81,10 @@ export let dataHandler = {
     deleteCard: function(cardId, callback) {
         this._api_post('/delete-card', cardId, callback)
 
+    },
+
+    renameColumn: function(statusId, statusTitle, callback){
+        this._api_post(`/rename-status/${statusId}`, statusTitle, callback)
     }
 
      // here comes more features
