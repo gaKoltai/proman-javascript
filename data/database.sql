@@ -45,6 +45,13 @@ ALTER TABLE ONLY statuses
 
 INSERT INTO boards VALUES (1,'Board 1');
 INSERT INTO boards VALUES (2,'Board 2');
+INSERT INTO boards VALUES (3,'Board 3');
+INSERT INTO boards VALUES (4,'Board 4');
+
+INSERT INTO statuses VALUES (0,1,'new');
+INSERT INTO statuses VALUES(1,2,'in progress');
+INSERT INTO statuses VALUES(2,3,'testing');
+INSERT INTO statuses VALUES(3,4,'done');
 
 INSERT INTO cards VALUES (1,1,'new card 1',0,0);
 INSERT INTO cards VALUES (2,1,'new card 2',0,1);
@@ -59,7 +66,3 @@ INSERT INTO cards VALUES (10,2,'planning',2,0);
 INSERT INTO cards VALUES (11,2,'done card 1',3,0);
 INSERT INTO cards VALUES (12,2,'done card 1',3,1);
 
-INSERT INTO statuses VALUES (0,1,'new');
-INSERT INTO statuses VALUES(1,2,'in progress');
-INSERT INTO statuses VALUES(2,3,'testing');
-INSERT INTO statuses VALUES(3,4,'done');
