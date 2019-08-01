@@ -57,14 +57,14 @@ export let dom = {
 
     showColumns: function(){
         let boards = document.getElementsByClassName('board');
+        let columnsTemplate = document.getElementById('board-columns');
+        let columnTemplate = document.getElementById('board-column');
+
         for (let board of boards) {
 
-            let columnsTemplate = document.getElementById('board-columns');
-            let columnTemplate = document.getElementById('board-column');
             let columnsClone = document.importNode(columnsTemplate.content, true);
 
             dataHandler.getStatuses(board.dataset.id, function (statusData) {
-
                 for (let status of statusData) {
                     let columnClone = document.importNode(columnTemplate.content, true);
 
@@ -72,16 +72,19 @@ export let dom = {
                     const statusTitle = status.title;
 
                     const statusIdDom = columnClone.querySelector('.board-column-content');
-                    statusIdDom.setAttribute('data-status-id', `${statusId}`);
+                    statusIdDom.setAttribute('data-status-id', statusId);
 
                     const statusTitleDom = columnClone.querySelector('.board-column-title');
-                    statusTitleDom.children.textContent = statusTitle;
+                    statusTitleDom.textContent = statusTitle;
 
-                    columnsClone.appendChild(columnClone);
+                    let container = columnsClone.querySelector('div');
+
+                    container.appendChild(columnClone);
+
                 }
+                board.appendChild(columnsClone);
             });
 
-            board.appendChild(columnsClone);
         }
     },
 
@@ -142,8 +145,6 @@ export let dom = {
     // here comes more features
     toggleBoard: function() {
         let boards = document.getElementsByClassName('board');
-
-
 
         for (let board of boards) {
             let toggle = board.querySelector('.board-toggle');
