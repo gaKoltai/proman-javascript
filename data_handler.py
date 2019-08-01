@@ -75,6 +75,14 @@ def get_cards_for_board(cursor, board_id):
 
 
 @connection.connection_handler
+def get_all_cards(cursor):
+    cursor.execute("""
+                    SELECT * FROM cards
+                    """)
+    return cursor.fetchall()
+
+
+@connection.connection_handler
 def get_statuses(cursor, board_id):
     cursor.execute("""
                     SELECT id, title FROM statuses

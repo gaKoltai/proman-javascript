@@ -81,6 +81,7 @@ export let dom = {
                 }
                 board.appendChild(columnsClone);
                 dom.toggleBoard();
+                dom.loadCards();
             });
 
         }
@@ -118,7 +119,7 @@ export let dom = {
             let title = boardName.value;
             dataHandler.createNewBoard(`${title}`, () =>{
                 boardName.value = "";
-                this.loadBoards()
+                this.loadCards();
             })
 
         })
@@ -128,7 +129,7 @@ export let dom = {
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
 
-        dataHandler.getCardsByBoardId(boardId, dom.showCards)
+        dataHandler.getCards(dom.showCards)
     },
     showCards: function (cards) {
         // shows the cards of a board

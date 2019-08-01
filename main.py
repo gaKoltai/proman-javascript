@@ -57,6 +57,12 @@ def get_cards_for_board(board_id: int):
     return cards
 
 
+@app.route("/get-all-cards")
+@json_response
+def get_all_cards():
+    return data_handler.get_all_cards()
+
+
 @app.route("/delete-card/", methods=['POST'])
 @json_response
 def delete_card():
