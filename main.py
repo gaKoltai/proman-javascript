@@ -54,6 +54,7 @@ def get_cards_for_board(board_id: int):
 
 
 @app.route('/delete-board', methods=['POST'])
+@json_response
 def delete_board():
 
     board_id = request.data
