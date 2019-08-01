@@ -22,11 +22,14 @@ export let dom = {
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
-        dataHandler.getBoards(function(boards){
+        dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
             dom.toggleBoard();
             dom.deleteBoard();
         });
+
+
+
     },
 
 
@@ -37,23 +40,24 @@ export let dom = {
         let container = document.querySelector('.board-container');
         container.innerHTML = "";
 
-        for(let board of boards){
+        for (let board of boards) {
             let clone = document.importNode(boardTemplate.content, true);
             let title = clone.querySelector('.board-title');
-            clone.querySelector('.board').id = `board${board.id}`;
+            clone.querySelector('.board').id = `${board.id}`;
             clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
+
             title.innerHTML = `${board.title}`;
             container.appendChild(clone);
         }
     },
 
-    createBoard: function() {
+    createBoard: function () {
 
         let button = document.getElementById('new-board');
         let boardName = document.getElementById('board-name');
-        button.addEventListener('click',()=>{
+        button.addEventListener('click', () => {
             let title = boardName.value;
-            dataHandler.createNewBoard(`${title}`, () =>{
+            dataHandler.createNewBoard(`${title}`, () => {
                 boardName.value = "";
                 this.loadBoards()
             })
@@ -63,13 +67,32 @@ export let dom = {
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
-        dataHandler.getCardsByBoardId(boardId, this.showCards)
+
+        dataHandler.getCardsByBoardId(boardId, dom.showCards)
     },
     showCards: function (cards) {
         // shows the cards of a board
         // it adds necessary event listeners also
-        console.log(cards)
+        console.log(cards);
+        let cardTemplate = document.querySelector('#card-template');
+
+        for (let card of cards) {
+
+            let clone = document.importNode(cardTemplate.content, true);
+            console.log(card.board_id);
+            let columnToPopulate = document.getElementById(`${card.board_id}`).getElementsByClassName(`${card.status_id}`)[0];
+
+            let title = clone.querySelector('.card-title');
+            title.textContent = `${card.title}`;
+            columnToPopulate.appendChild(clone);
+
+        }
+
+
+
     },
+
+
     toggleBoard: function() {
         let boards = document.getElementsByClassName('board');
         let template = document.getElementById('board-columns');
@@ -83,7 +106,8 @@ export let dom = {
 
                 if (toggleImage.className === "fas fa-chevron-down"){
                     board.appendChild(clone);
-                    toggleImage.className = "fas fa-chevron-up"
+                    toggleImage.className = "fas fa-chevron-up";
+                    dom.loadCards(`${board.dataset.id}`) //loads just a sample, integrate into event listener for dropdown
                 } else {
                     toggleImage.className = "fas fa-chevron-down";
                     board.removeChild(board.children[1]);
