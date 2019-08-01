@@ -28,6 +28,9 @@ export let dom = {
             dom.toggleBoard();
             dom.deleteBoard();
         });
+
+
+
     },
 
 
@@ -78,13 +81,13 @@ export let dom = {
 
     },
 
-    createBoard: function () {
+    createBoard: function() {
 
         let button = document.getElementById('new-board');
         let boardName = document.getElementById('board-name');
-        button.addEventListener('click', () => {
+        button.addEventListener('click',()=>{
             let title = boardName.value;
-            dataHandler.createNewBoard(`${title}`, () => {
+            dataHandler.createNewBoard(`${title}`, () =>{
                 boardName.value = "";
                 this.loadBoards()
             })
@@ -167,7 +170,7 @@ export let dom = {
                 if (toggleImage.className === "fas fa-chevron-down"){
                     board.appendChild(clone);
                     toggleImage.className = "fas fa-chevron-up";
-                    dom.loadCards(`${board.dataset.id}`) //loads just a sample, integrate into event listener for dropdown
+                    dom.loadCards(`${board.id}`)
                 } else {
                     toggleImage.className = "fas fa-chevron-down";
                     board.removeChild(board.children[1]);
