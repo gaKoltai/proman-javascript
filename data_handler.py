@@ -37,6 +37,18 @@ def create_board(cursor, board):
 
 
 @connection.connection_handler
+def get_newly_created_board(cursor,board):
+    create_board(board)
+
+    cursor.execute("""
+                    SELECT id, title FROM boards
+                    ORDER BY id DESC LIMIT 1
+                    """)
+
+    return cursor.fetchone()
+
+
+@connection.connection_handler
 def create_statuses(cursor, board_id):
     cursor.execute("""
                     INSERT INTO statuses
@@ -90,18 +102,17 @@ def delete_board(cursor, boardId):
     cursor.execute("""
                     DELETE FROM boards
                     WHERE id = %(id)s
-                    """, {'id':boardId})
+                    """, {'id': boardId})
 
 
 @connection.connection_handler
 def create_card(cursor, card_title, board_id):
-
     cursor.execute("""
                     SELECT id FROM statuses
                     WHERE board_id = %(board_id)s
                     ORDER BY id
                     LIMIT 1;
-                    """,{'board_id': board_id})
+                    """, {'board_id': board_id})
 
     status_id = cursor.fetchone()['id']
 
@@ -109,15 +120,27 @@ def create_card(cursor, card_title, board_id):
                     INSERT INTO cards
                     (board_id, title, status_id, card_order)
                     VALUES(%(board_id)s, %(title)s, %(status_id)s, 0)
-                    """, {'board_id': board_id, 'title': card_title, 'status_id': status_id })
+                    """, {'board_id': board_id, 'title': card_title, 'status_id': status_id})
+
+
+@connection.connection_handler
+def get_newly_created_card(cursor, card_title, board_id):
+    create_card(card_title, board_id)
+
+    cursor.execute(""" 
+                    SELECT id, board_id, title, status_id, card_order 
+                    FROM cards
+                    ORDER BY id DESC LIMIT 1
+                    """)
+
+    return cursor.fetchone()
 
 
 @connection.connection_handler
 def delete_card(cursor, cardId):
     cursor.execute("""
                     DELETE FROM cards WHERE id = %(id)s
-                    """,{'id': cardId})
-
+                    """, {'id': cardId})
 
 
 @connection.connection_handler

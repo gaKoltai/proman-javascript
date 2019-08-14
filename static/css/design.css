@@ -147,7 +147,7 @@ section.board{
 }
 
 .card-create-input {
-    display: none;
+    display: inline;
 }
 
 .column-rename-input {

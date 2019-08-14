@@ -26,9 +26,7 @@ export let dataHandler = {
             body: JSON.stringify(data)
         })
             .then(response => response.json())
-            .then(callback)
-
-    },
+            .then(jsonResponse => callback(jsonResponse))},
     init: function () {
     },
     getBoards: function (callback) {
@@ -59,7 +57,7 @@ export let dataHandler = {
         this._api_get('/get-all-cards', response => callback(response))
     },
     getCard: function (cardId, callback) {
-        // the card is retrieved and then the callback function is called with the card
+
     },
     createNewBoard: function (boardTitle, callback) {
         this._api_post('/create-board', boardTitle, callback)
@@ -71,7 +69,7 @@ export let dataHandler = {
     },
     renameBoard: function (id, title, callback) {
         let data = {'id': id, 'title': title};
-        this._api_post('/rename-board', data, response => {callback();});
+        this._api_post('/rename-board', data, callback);
     },
     deleteBoard: function(boardId, callback) {
         this._api_post('/delete-board', boardId, callback)

@@ -9,13 +9,13 @@ export let dom = {
         this.createBoard();
         this.toggleBoard();
         this.deleteBoard();
+        this.createCard();
+        this.renameBoard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
-            dom.renameBoard();
-            dom.createCard();
             dom.showColumns();
         });
     },
@@ -24,24 +24,33 @@ export let dom = {
     showBoards: function (boards) {
         // shows boards appending them to #boards div
         // it adds necessary event listeners also
-        let boardTemplate = document.getElementById('board-template');
         let container = document.querySelector('.board-container');
         container.innerHTML = "";
 
         for (let board of boards) {
-            let clone = document.importNode(boardTemplate.content, true);
-            let title = clone.querySelector('.board-title');
-            clone.querySelector('.board').id = `${board.id}`;
-            title.setAttribute('data-board-id', board.id);
-            clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
+            dom.showBoard(board, container)
 
-            title.innerHTML = `${board.title}`;
-            container.appendChild(clone);
         }
 
     },
 
+
+    showBoard: function (board) {
+        const boardTemplate = document.getElementById('board-template');
+        const container = document.querySelector('.board-container');
+        const clone = document.importNode(boardTemplate.content, true);
+        const title = clone.querySelector('.board-title');
+        clone.querySelector('.board').id = `${board.id}`;
+        title.setAttribute('data-board-id', board.id);
+        clone.querySelector('.board').setAttribute('data-id', `${board.id}`);
+
+        title.innerHTML = `${board.title}`;
+        container.appendChild(clone);
+
+    },
+
     showColumns: function () {
+
         let boards = document.getElementsByClassName('board');
         let columnsTemplate = document.getElementById('board-columns');
         let columnTemplate = document.getElementById('board-column');
@@ -49,42 +58,38 @@ export let dom = {
         boards.innerHTML = "";
 
         for (let board of boards) {
-
-            let columnsClone = document.importNode(columnsTemplate.content, true);
-
-            dataHandler.getStatuses(board.dataset.id, function (statusData) {
-                for (let status of statusData) {
-                    let columnClone = document.importNode(columnTemplate.content, true);
-
-                    let statusId = status.id;
-                    let statusTitle = status.title;
-
-                    let statusIdDom = columnClone.querySelector('.board-column-content');
-                    statusIdDom.setAttribute('data-status-id', statusId);
-
-                    let statusTitleDom = columnClone.querySelector('.board-column-title');
-                    statusTitleDom.textContent = statusTitle;
-
-                    let container = columnsClone.querySelector('div');
-
-                    container.appendChild(columnClone);
-
-
-                }
-                board.appendChild(columnsClone);
-
-            });
-            dom.loadCards();
-
-
+            dom.addColumnsToBoard(board, columnsTemplate, columnTemplate, dom.loadCards)
         }
+    },
 
 
+    addColumnsToBoard: function (board, columns, column, callback) {
 
+        let columnsClone = document.importNode(columns.content, true);
+
+        dataHandler.getStatuses(board.dataset.id, function (statusData) {
+            for (let status of statusData) {
+                let columnClone = document.importNode(column.content, true);
+
+                let statusId = status.id;
+                let statusTitle = status.title;
+
+                let statusIdDom = columnClone.querySelector('.board-column-content');
+                statusIdDom.setAttribute('data-status-id', statusId);
+
+                let statusTitleDom = columnClone.querySelector('.board-column-title');
+                statusTitleDom.textContent = statusTitle;
+
+                let container = columnsClone.querySelector('div');
+
+                container.appendChild(columnClone);
+            }
+            board.appendChild(columnsClone);
+            callback(board.dataset.id);
+        });
     },
 
     toggleCreateBoard: function () {
-
 
         listeners.toggleCreateBoard(function (event) {
 
@@ -105,113 +110,106 @@ export let dom = {
     createBoard: function () {
 
 
-        listeners.createBoard(function() {
+        listeners.createBoard(function () {
             const inputField = document.getElementById('board-name');
-            dataHandler.createNewBoard(inputField.value, function() {
+            dataHandler.createNewBoard(inputField.value, function (board) {
+                dom.showBoard(board);
                 inputField.value = "";
-                dom.loadBoards();
+
             })
         });
 
     },
 
-    loadCards: function () {
+    loadCards: function (boardId) {
         // retrieves cards and makes showCards called
 
-        dataHandler.getCards(dom.showCards)
+        dataHandler.getCardsByBoardId(boardId, dom.showCards)
     },
+
     showCards: function (cards) {
-        // shows the cards of a board
-        // it adds necessary event listeners also
-        let cardTemplate = document.querySelector('#card-template');
 
         for (let card of cards) {
-
-            let clone = document.importNode(cardTemplate.content, true);
-            let columnToPopulate = document.querySelector(`[data-status-id='${card.status_id}']`);
-
-            let title = clone.querySelector('.card-title');
-            title.textContent = `${card.title}`;
-            clone.querySelector(".card-remove").addEventListener('click', function () {
-                dataHandler.deleteCard(`${card.id}`, dom.loadCards)
-            });
-            columnToPopulate.appendChild(clone);
+            dom.showCard(card)
 
         }
-
-
     },
 
     createCard: function () {
 
-        const boards = document.getElementsByClassName('board');
+        listeners.createCard(function (event) {
 
-        for (let board of boards) {
+            const board = event.target.parentElement;
+            const inputField = board.querySelector('.card-create-input');
+            const boardId = board.parentElement.dataset.id;
 
-            let createCardButton = board.querySelector('.board-add');
+            inputField.value = "";
+            inputField.classList.remove('invisible');
+            event.target.classList.add('invisible');
 
-            createCardButton.addEventListener('click', () => {
-                let input = board.querySelector('.card-create-input');
-                createCardButton.style.display = "none";
-                input.style.display = "inline";
-                input.addEventListener('keydown', function addCard(event) {
-                    if (event.key === "Enter") {
-                        let cardTitle = input.value;
-                        dataHandler.createNewCard(`${cardTitle}`, `${board.id}`, function () {
-                            dom.loadBoards();
-                            input.value = "";
-                            input.style.display = "none";
-                            createCardButton.style.display = "inline";
-                            input.removeEventListener('keydown', addCard
-                            )
-                        });
-                    }
-                })
+            listeners.sendNewCardsName(function (event) {
+
+                if (event.key === 'Enter') {
+                    let newCardTitle = event.target.value;
+
+                    dataHandler.createNewCard(newCardTitle, boardId, function (card) {
+                        dom.showCard(card)
+                    });
+
+                    inputField.classList.add('invisible');
+                    event.target.classList.remove('invisible');
+                }
             })
-        }
+
+        });
+    },
+
+
+    showCard: function (card) {
+
+        const cardTemplate = document.querySelector('#card-template');
+        const clone = document.importNode(cardTemplate.content, true);
+        const columnToPopulate = document.querySelector(`[data-status-id='${card.status_id}']`);
+        const title = clone.querySelector('.card-title');
+
+        title.textContent = `${card.title}`;
+        columnToPopulate.appendChild(clone)
+
     },
 
     renameBoard: function () {
-        const boards = document.querySelector('.board-container');
-        if (boards === null) {
-            return;
-        }
-        for (let board of boards.children) {
-            const renameBtn = board.querySelector('.board-title');
-            if (renameBtn === null) {
-                console.log('no span found');
-            }
-            renameBtn.addEventListener('click', function (event) {
-                const boardTitle = event.target;
-                let titleText = boardTitle.textContent;
-                let inputField = document.createElement('input');
-                inputField.setAttribute('type', 'text');
-                inputField.setAttribute('value', titleText);
-                boardTitle.innerHTML = '';
-                boardTitle.appendChild(inputField);
-                inputField.addEventListener('keydown', function (event) {
-                    if (event.key === "Enter") {
-                        let boardId = boardTitle.dataset.boardId;
-                        let newTitle = event.target.value;
-                        console.log(`id: ${boardId}, title: ${newTitle}`);
-                        dataHandler.renameBoard(boardId, newTitle, dom.loadBoards);
-                    }
-                })
+
+
+        listeners.renameBoard(function (event) {
+
+            const boardHeader = event.target.parentElement;
+            const boardId = boardHeader.parentElement.dataset.id;
+            const boardTitle = event.target.textContent;
+            const inputField = boardHeader.querySelector('.board-rename-input');
+
+            inputField.classList.remove('invisible');
+            inputField.value = boardTitle;
+            event.target.classList.add('invisible');
+
+            listeners.sendNewBoardName(function(event){
+                if (event.key === 'Enter') {
+                    dataHandler.renameBoard(boardId, inputField.value, dom.loadBoards);
+                }
             })
-        }
+        });
     },
-    // here comes more features
+
     toggleBoard: function () {
 
 
-        listeners.openBoard(function(event){
+        listeners.openBoard(function (event) {
             const board = event.target.parentElement.parentElement;
             const boardColumns = board.querySelector('.board-columns');
 
-            if(event.target.classList.contains('fa-chevron-down')){
+            if (event.target.classList.contains('fa-chevron-down')) {
                 boardColumns.classList.remove('invisible',);
                 event.target.classList.replace('fa-chevron-down', 'fa-chevron-up')
-            }else {
+            } else {
                 boardColumns.classList.add('invisible');
                 event.target.classList.replace('fa-chevron-up', 'fa-chevron-down')
             }
@@ -222,7 +220,7 @@ export let dom = {
     deleteBoard: function () {
 
 
-        listeners.deleteBoard(function(event) {
+        listeners.deleteBoard(function (event) {
             const boardHeader = event.target.parentElement;
             const boardId = boardHeader.querySelector('.board-title').dataset.boardId;
 
@@ -233,7 +231,6 @@ export let dom = {
 
 
     },
-
 
 
     renameColumn: function () {

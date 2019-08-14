@@ -35,7 +35,8 @@ def get_statuses(board_id):
 def create_board():
     board = request.data
     board = json.loads(board)
-    return data_handler.create_board(board)
+
+    return data_handler.get_newly_created_board(board)
 
 
 @app.route('/rename-board', methods=['POST'])
@@ -43,6 +44,7 @@ def create_board():
 def rename_board():
     data = request.data
     data = json.loads(data)
+
     return data_handler.rename_board(data)
 
 
@@ -89,7 +91,7 @@ def create_card(board_id: int):
     card_title = request.data
     card_title = json.loads(card_title)
 
-    return data_handler.create_card(card_title, board_id)
+    return data_handler.get_newly_created_card(card_title, board_id)
 
 
 @app.route('/rename-status/<int:status_id>', methods=['POST'])

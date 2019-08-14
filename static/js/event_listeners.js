@@ -19,17 +19,13 @@ export const listeners = {
 
             },
             true)
-
     },
 
     deleteBoard: function (callback) {
 
-
         listeners.customEventListener('.board-delete', 'click', function (event) {
             callback(event)
         })
-
-
     },
 
     toggleCreateBoard: function (callback) {
@@ -47,6 +43,30 @@ export const listeners = {
 
     openBoard: function(callback) {
         listeners.customEventListener('.board-toggle', 'click', function(event){
+            callback(event)
+        })
+    },
+
+    createCard: function(callback) {
+        listeners.customEventListener('.card-add', 'click', function(event){
+            callback(event)
+        })
+    },
+
+    sendNewCardsName: function(callback) {
+        listeners.customEventListener('.card-create-input', 'keydown', function (event) {
+            callback(event)
+        })
+    },
+
+    renameBoard: function(callback) {
+        listeners.customEventListener('.board-title', 'click', function(event){
+            callback(event)
+        })
+    },
+
+    sendNewBoardName: function(callback) {
+        listeners.customEventListener('.board-rename-input', 'keydown', function(event){
             callback(event)
         })
     }
