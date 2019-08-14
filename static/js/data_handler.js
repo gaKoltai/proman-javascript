@@ -72,7 +72,6 @@ export let dataHandler = {
     renameBoard: function (id, title, callback) {
         let data = {'id': id, 'title': title};
         this._api_post('/rename-board', data, response => {callback();});
-        console.log('data handler communication');
     },
     deleteBoard: function(boardId, callback) {
         this._api_post('/delete-board', boardId, callback)

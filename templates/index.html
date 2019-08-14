@@ -2,29 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ProMan</title>
+    <title>AdequateMan</title>
 
     <link rel="shortcut icon" href="static/favicon/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/solid.css" integrity="sha384-rdyFrfAIC05c5ph7BKz3l5NG5yEottvO/DQ0dCrwD8gzeQDjYBHNr1ucUpQuljos" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css" integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/solid.css"
+          integrity="sha384-rdyFrfAIC05c5ph7BKz3l5NG5yEottvO/DQ0dCrwD8gzeQDjYBHNr1ucUpQuljos" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/fontawesome.css"
+          integrity="sha384-u5J7JghGz0qUrmEsWzBQkfvc8nK3fUT7DCaQzNQ+q4oEXhGSx+P2OqjWsfIRB8QT" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/design.css') }}">
+
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </head>
 <body>
-    {% include 'templates.html' %}
-    <h1>ProMan</h1>
-    <div class="new-board">
-        <div>
-           <button class="toggle-create-board" id="toggle-create-board"><i class="fas fa-plus"></i></button>
-        </div>
+{% include 'templates.html' %}
+<h1>AdequateMan</h1>
+<div class="new-board">
+    <div class="new-board-input invisible">
+        <button id="new-board">Create board</button>
+        <input type="text" placeholder="Enter board name" id="board-name">
     </div>
+    <button class="toggle-create-board fas fa-plus" id="toggle-create-board"></button>
+</div>
 
-    <div id="container">
-        <div class="board-container">
-        </div>
+<div id="container">
+    <div class="board-container">
     </div>
+</div>
 </body>
 </html>

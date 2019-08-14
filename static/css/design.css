@@ -83,7 +83,7 @@ section.board{
 }
 
 .board-columns{
-    display: none;
+    display: flex;
     flex-wrap: nowrap;
 }
 
@@ -151,5 +151,10 @@ section.board{
 }
 
 .column-rename-input {
+    display: none;
+}
+
+
+.invisible {
     display: none;
 }

@@ -1,17 +1,20 @@
 // It uses data_handler.js to visualize elements
 import {dataHandler} from "./data_handler.js";
+import {listeners} from "./event_listeners.js";
 
 export let dom = {
 
     init: function () {
-        this.toggleCreateBoard()
+        this.toggleCreateBoard();
+        this.createBoard();
+        this.toggleBoard();
+        this.deleteBoard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
         dataHandler.getBoards(function (boards) {
             dom.showBoards(boards);
             dom.renameBoard();
-            dom.deleteBoard();
             dom.createCard();
             dom.showColumns();
         });
@@ -69,52 +72,46 @@ export let dom = {
 
                 }
                 board.appendChild(columnsClone);
-                dom.toggleBoard(board);
 
             });
+            dom.loadCards();
 
 
         }
-        dom.loadCards();
+
+
 
     },
 
     toggleCreateBoard: function () {
 
-        let toggleButton = document.getElementById('toggle-create-board');
-        let template = document.getElementById('board-new');
-        let newBoardDiv = document.querySelector('.new-board');
-        let toggleImage = toggleButton.querySelector('i');
 
-        toggleButton.addEventListener('click', function () {
-            let clone = document.importNode(template.content, true);
+        listeners.toggleCreateBoard(function (event) {
 
-            if (toggleImage.className === 'fas fa-plus') {
-                toggleImage.className = 'fas fa-minus';
-                newBoardDiv.prepend(clone);
-                newBoardDiv.style.left = '55%';
-                dom.createBoard()
+            const inputField = document.querySelector('.new-board-input');
+
+            if (event.target.classList.contains('fa-plus')) {
+                inputField.classList.remove('invisible');
+                event.target.classList.replace('fa-plus', 'fa-minus')
             } else {
-                toggleImage.className = 'fas fa-plus';
-                newBoardDiv.removeChild(newBoardDiv.children[0]);
-                newBoardDiv.style.left = '73%';
+                inputField.classList.add('invisible');
+                event.target.classList.replace('fa-minus', 'fa-plus')
             }
+
         })
 
     },
 
     createBoard: function () {
 
-        let button = document.getElementById('new-board');
-        let boardName = document.getElementById('board-name');
-        button.addEventListener('click', () => {
-            let title = boardName.value;
-            dataHandler.createNewBoard(`${title}`, () => {
-                boardName.value = "";
-                this.loadBoards();
-            })
 
-        })
+        listeners.createBoard(function() {
+            const inputField = document.getElementById('board-name');
+            dataHandler.createNewBoard(inputField.value, function() {
+                inputField.value = "";
+                dom.loadBoards();
+            })
+        });
 
     },
 
@@ -170,11 +167,8 @@ export let dom = {
                         });
                     }
                 })
-
             })
         }
-
-
     },
 
     renameBoard: function () {
@@ -196,73 +190,83 @@ export let dom = {
                 boardTitle.innerHTML = '';
                 boardTitle.appendChild(inputField);
                 inputField.addEventListener('keydown', function (event) {
-                        if (event.key === "Enter") {
-                            let boardId = boardTitle.dataset.boardId;
-                            let newTitle = event.target.value;
-                            console.log(`id: ${boardId}, title: ${newTitle}`);
-                            dataHandler.renameBoard(boardId, newTitle, dom.loadBoards);
-                        }
+                    if (event.key === "Enter") {
+                        let boardId = boardTitle.dataset.boardId;
+                        let newTitle = event.target.value;
+                        console.log(`id: ${boardId}, title: ${newTitle}`);
+                        dataHandler.renameBoard(boardId, newTitle, dom.loadBoards);
                     }
-                )
-            })
-        }
-    },
-    // here comes more features
-    toggleBoard: function (board) {
-
-        let toggle = board.querySelector('.board-toggle');
-        let toggleImage = toggle.querySelector('i');
-        let columnContainer = board.querySelector('.board-columns');
-        toggle.addEventListener('click', function showBoardContents() {
-
-            if (toggleImage.className === "fas fa-chevron-down") {
-                columnContainer.style.display = "flex";
-                toggleImage.className = "fas fa-chevron-up";
-            } else {
-                columnContainer.style.display = "none";
-                toggleImage.className = "fas fa-chevron-down";
-
-            }
-        })
-    },
-
-    /* DELETES ONLY BOARD (no cards - yet) */
-
-    deleteBoard: function () {
-        let boards = document.getElementsByClassName('board');
-
-        for (let board of boards) {
-            let _delete = board.querySelector('.board-delete');
-            _delete.addEventListener('click', function () {
-                dataHandler.deleteBoard(`${board.dataset.id}`, function () {
-                    dom.loadBoards();
                 })
             })
         }
     },
+    // here comes more features
+    toggleBoard: function () {
 
-    renameColumn: function (board) {
-        let columns = board.getElementsByClassName('board-columns');
 
-        for (let column of columns) {
-            let columnTitle = column.querySelector('board-column-title');
+        listeners.openBoard(function(event){
+            const board = event.target.parentElement.parentElement;
+            const boardColumns = board.querySelector('.board-columns');
 
-            columnTitle.addEventListener('click', function toggleColumnRename() {
-                let titleInput = column.querySelector('column-rename-input');
-                columnTitle.style.display = "none";
-                titleInput.style.display = "flex";
+            if(event.target.classList.contains('fa-chevron-down')){
+                boardColumns.classList.remove('invisible',);
+                event.target.classList.replace('fa-chevron-down', 'fa-chevron-up')
+            }else {
+                boardColumns.classList.add('invisible');
+                event.target.classList.replace('fa-chevron-up', 'fa-chevron-down')
+            }
 
-                titleInput.addEventListener('keydown', function (event) {
-                    if (event.key === "Enter") {
-                        columnTitle.style.display = "flex";
-                        titleInput.style.display = "none";
-                        dataHandler.renameColumn(`${statusId}`, `${titleInput.value}`, function () {
-                            dom.loadBoards()
-                        });
-                    }
-                });
+        })
+    },
+
+    deleteBoard: function () {
+
+
+        listeners.deleteBoard(function(event) {
+            const boardHeader = event.target.parentElement;
+            const boardId = boardHeader.querySelector('.board-title').dataset.boardId;
+
+            dataHandler.deleteBoard(boardId, function () {
+                dom.loadBoards();
             })
+        })
+
+
+    },
+
+
+
+    renameColumn: function () {
+
+        const boards = document.getElementsByClassName('board');
+
+
+        for (let board of boards) {
+            const columns = board.getElementsByClassName('board-columns');
+
+            for (let column of columns) {
+
+                let columnTitle = column.querySelector('board-column-title');
+
+                columnTitle.addEventListener('click', function toggleColumnRename() {
+                    let titleInput = column.querySelector('column-rename-input');
+                    columnTitle.style.display = "none";
+                    titleInput.style.display = "flex";
+
+                    titleInput.addEventListener('keydown', function (event) {
+                        if (event.key === "Enter") {
+                            columnTitle.style.display = "flex";
+                            titleInput.style.display = "none";
+                            dataHandler.renameColumn(`${statusId}`, `${titleInput.value}`, function () {
+                                dom.loadBoards()
+                            });
+                        }
+                    });
+                })
+            }
+
         }
+
 
     }
 };

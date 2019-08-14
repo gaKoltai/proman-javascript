@@ -35,7 +35,7 @@ def get_statuses(board_id):
 def create_board():
     board = request.data
     board = json.loads(board)
-    return data_handler.board_create(board)
+    return data_handler.create_board(board)
 
 
 @app.route('/rename-board', methods=['POST'])
