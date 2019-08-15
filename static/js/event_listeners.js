@@ -1,7 +1,4 @@
-import {dataHandler} from "./data_handler.js";
-import {dom} from "./dom.js";
-
-export const listeners = {
+export let listeners = {
 
     customEventListener: function (element, event, handler) {
 
@@ -54,7 +51,7 @@ export const listeners = {
     },
 
     sendNewCardsName: function(callback) {
-        listeners.customEventListener('.card-create-input', 'keydown', function (event) {
+        listeners.customEventListener('.card-add-btn', 'click', function (event) {
             callback(event)
         })
     },

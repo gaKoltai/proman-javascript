@@ -40,6 +40,8 @@ export let dataHandler = {
         });
     },
     getBoard: function (boardId, callback) {
+
+        this._api_get(`/get-board/${boardId}`, (response) => callback(response))
         // the board is retrieved and then the callback function is called with the board
     },
     getStatuses: function (boardId, callback) {
@@ -57,6 +59,11 @@ export let dataHandler = {
         this._api_get('/get-all-cards', response => callback(response))
     },
     getCard: function (cardId, callback) {
+
+        this._api_get(`/get-card/${cardId}`, (response) => {
+            this._data = response;
+            callback(response)
+        })
 
     },
     createNewBoard: function (boardTitle, callback) {

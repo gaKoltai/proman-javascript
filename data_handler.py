@@ -26,6 +26,13 @@ def get_boards(cursor):
 
 
 @connection.connection_handler
+def get_board_by_board_id(cursor, board_id):
+    cursor.execute("""SELECT * FROM boards WHERE id = %(board_id)s""", {'board_id':board_id})
+
+    return cursor.fetchone()
+
+
+@connection.connection_handler
 def create_board(cursor, board):
     cursor.execute("""
                     INSERT INTO boards
@@ -33,19 +40,15 @@ def create_board(cursor, board):
                     VALUES (%(title)s)
                     RETURNING id;
                     """, {'title': board})
-    create_statuses(cursor.fetchone()['id'])
+
+    id = cursor.fetchone()['id']
+
+    create_statuses(id)
+
+    return id
 
 
-@connection.connection_handler
-def get_newly_created_board(cursor,board):
-    create_board(board)
 
-    cursor.execute("""
-                    SELECT id, title FROM boards
-                    ORDER BY id DESC LIMIT 1
-                    """)
-
-    return cursor.fetchone()
 
 
 @connection.connection_handler
@@ -86,6 +89,13 @@ def get_all_cards(cursor):
                     """)
     return cursor.fetchall()
 
+@connection.connection_handler
+def get_card_by_card_id(cursor, card_id):
+
+    cursor.execute("""SELECT * FROM cards WHERE id= %(card_id)s""", {'card_id':card_id})
+
+    return cursor.fetchone()
+
 
 @connection.connection_handler
 def get_statuses(cursor, board_id):
@@ -102,7 +112,12 @@ def delete_board(cursor, boardId):
     cursor.execute("""
                     DELETE FROM boards
                     WHERE id = %(id)s
+                    RETURNING id;
                     """, {'id': boardId})
+
+    id = cursor.fetchone()['id']
+
+    return id
 
 
 @connection.connection_handler
@@ -120,21 +135,12 @@ def create_card(cursor, card_title, board_id):
                     INSERT INTO cards
                     (board_id, title, status_id, card_order)
                     VALUES(%(board_id)s, %(title)s, %(status_id)s, 0)
+                    RETURNING id;
                     """, {'board_id': board_id, 'title': card_title, 'status_id': status_id})
 
+    id = cursor.fetchone()['id']
 
-@connection.connection_handler
-def get_newly_created_card(cursor, card_title, board_id):
-    create_card(card_title, board_id)
-
-    cursor.execute(""" 
-                    SELECT id, board_id, title, status_id, card_order 
-                    FROM cards
-                    ORDER BY id DESC LIMIT 1
-                    """)
-
-    return cursor.fetchone()
-
+    return id
 
 @connection.connection_handler
 def delete_card(cursor, cardId):

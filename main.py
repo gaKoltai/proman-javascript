@@ -36,7 +36,7 @@ def create_board():
     board = request.data
     board = json.loads(board)
 
-    return data_handler.get_newly_created_board(board)
+    return data_handler.create_board(board)
 
 
 @app.route('/rename-board', methods=['POST'])
@@ -92,7 +92,7 @@ def create_card(board_id: int):
     card_title = request.data
     card_title = json.loads(card_title)
 
-    return data_handler.get_newly_created_card(card_title, board_id)
+    return data_handler.create_card(card_title, board_id)
 
 
 @app.route('/rename-status/<int:status_id>', methods=['POST'])
@@ -102,6 +102,21 @@ def rename_status(status_id: int):
     status_title = json.loads(status_title)
 
     return data_handler.rename_status(status_id, status_title)
+
+
+
+@app.route('/get-board/<int:board_id>', methods=['GET'])
+@json_response
+def get_board_by_board_id(board_id: int):
+
+    return data_handler.get_board_by_board_id(board_id)
+
+
+@app.route('/get-card/<int:card_id>', methods=['GET'])
+@json_response
+def get_card_by_card_id(card_id: int):
+
+    return data_handler.get_card_by_card_id(card_id)
 
 
 

@@ -48,29 +48,31 @@ export let dom = {
         title.innerHTML = `${board.title}`;
         container.appendChild(clone);
 
+
     },
 
     showColumns: function () {
 
         let boards = document.getElementsByClassName('board');
-        let columnsTemplate = document.getElementById('board-columns');
-        let columnTemplate = document.getElementById('board-column');
 
         boards.innerHTML = "";
 
         for (let board of boards) {
-            dom.addColumnsToBoard(board, columnsTemplate, columnTemplate, dom.loadCards)
+            dom.addColumnsToBoard(board, dom.loadCards)
         }
     },
 
 
-    addColumnsToBoard: function (board, columns, column, callback) {
+    addColumnsToBoard: function (board, callback) {
 
-        let columnsClone = document.importNode(columns.content, true);
+        let columnsTemplate = document.getElementById('board-columns');
+        let columnTemplate = document.getElementById('board-column');
+
+        let columnsClone = document.importNode(columnsTemplate.content, true);
 
         dataHandler.getStatuses(board.dataset.id, function (statusData) {
             for (let status of statusData) {
-                let columnClone = document.importNode(column.content, true);
+                let columnClone = document.importNode(columnTemplate.content, true);
 
                 let statusId = status.id;
                 let statusTitle = status.title;
@@ -108,13 +110,16 @@ export let dom = {
 
     },
 
+
     createBoard: function () {
 
 
         listeners.createBoard(function () {
             const inputField = document.getElementById('board-name');
-            dataHandler.createNewBoard(inputField.value, function (board) {
-                dom.showBoard(board);
+            dataHandler.createNewBoard(inputField.value, function (boardId) {
+                dataHandler.getBoard(boardId, function (board) {
+                    dom.loadBoards();
+                });
                 inputField.value = "";
 
             })
@@ -131,7 +136,14 @@ export let dom = {
     showCards: function (cards) {
 
         for (let card of cards) {
-            dom.showCard(card)
+            const cardTemplate = document.querySelector('#card-template');
+            const clone = document.importNode(cardTemplate.content, true);
+            const columnToPopulate = document.querySelector(`[data-status-id='${card.status_id}']`);
+            const title = clone.querySelector('.card-title');
+
+            clone.querySelector('.card').setAttribute('data-card-id', `${card.id}`);
+            title.textContent = `${card.title}`;
+            columnToPopulate.appendChild(clone)
 
         }
     },
@@ -140,37 +152,42 @@ export let dom = {
 
         listeners.createCard(function (event) {
 
-            const board = event.target.parentElement;
-            const inputField = board.querySelector('.card-create-input');
-            const boardId = board.parentElement.dataset.id;
+            let board = event.target.parentElement;
+            let boardColumns = board.parentElement.querySelector('.board-columns');
+            let inputField = board.querySelector('.card-create-input');
+            let addCardIcon = board.querySelector('.card-add-btn');
+            let boardId = board.parentElement.dataset.id;
+            let createButton = event.target;
 
             inputField.value = "";
             inputField.classList.remove('invisible');
-            event.target.classList.add('invisible');
+            createButton.classList.add('invisible');
+            addCardIcon.classList.remove('invisible');
 
             listeners.sendNewCardsName(function (event) {
 
-                if (event.key === 'Enter') {
-                    let newCardTitle = event.target.value;
+                let newCardTitle = inputField.value;
+                dataHandler.createNewCard(newCardTitle, boardId, function (cardId) {
+                    dataHandler.getCard(cardId, function (card) {
+                        dom.showCard(card, boardColumns)
+                    })
+                });
+                event.target.classList.add('invisible');
+                inputField.classList.add('invisible');
+                createButton.classList.remove('invisible')
 
-                    dataHandler.createNewCard(newCardTitle, boardId, function (card) {
-                        dom.showCard(card)
-                    });
 
-                    inputField.classList.add('invisible');
-                    event.target.classList.remove('invisible');
-                }
-            })
+            });
 
         });
     },
 
 
-    showCard: function (card) {
+    showCard: function (card, boardColumns) {
 
         const cardTemplate = document.querySelector('#card-template');
         const clone = document.importNode(cardTemplate.content, true);
-        const columnToPopulate = document.querySelector(`[data-status-id='${card.status_id}']`);
+        const columnToPopulate = boardColumns.querySelector(`[data-status-id='${card.status_id}']`);
         const title = clone.querySelector('.card-title');
 
         clone.querySelector('.card').setAttribute('data-card-id', `${card.id}`);
@@ -186,16 +203,20 @@ export let dom = {
 
             const boardHeader = event.target.parentElement;
             const boardId = boardHeader.parentElement.dataset.id;
-            const boardTitle = event.target.textContent;
+            const boardTitle = event.target;
             const inputField = boardHeader.querySelector('.board-rename-input');
 
             inputField.classList.remove('invisible');
-            inputField.value = boardTitle;
+            inputField.value = boardTitle.textContent;
             event.target.classList.add('invisible');
 
-            listeners.sendNewBoardName(function(event){
+            listeners.sendNewBoardName(function (event) {
                 if (event.key === 'Enter') {
-                    dataHandler.renameBoard(boardId, inputField.value, dom.loadBoards);
+                    dataHandler.renameBoard(boardId, inputField.value, function(){
+                        boardTitle.textContent = inputField.value;
+                        event.target.classList.add('invisible');
+                        boardTitle.classList.remove()
+                    });
                 }
             })
         });
@@ -225,9 +246,11 @@ export let dom = {
         listeners.deleteBoard(function (event) {
             const boardHeader = event.target.parentElement;
             const boardId = boardHeader.querySelector('.board-title').dataset.boardId;
+            const board = boardHeader.parentElement;
+            const boardContainer = board.parentElement;
 
             dataHandler.deleteBoard(boardId, function () {
-                dom.loadBoards();
+                boardContainer.removeChild(board)
             })
         })
 
@@ -235,18 +258,16 @@ export let dom = {
     },
 
 
-    deleteCard: function() {
+    deleteCard: function () {
         listeners.deleteCard(function (event) {
 
             const card = event.target.parentElement;
             const cardId = card.dataset.cardId;
-            const boardId = card.parentElement.parentElement.parentElement.parentElement.dataset.id;
+            const boardColumn = card.parentElement;
 
             dataHandler.deleteCard(cardId, function () {
-                dom.loadCards(boardId)
-
+                boardColumn.removeChild(card)
             })
-
 
 
         })
@@ -286,5 +307,6 @@ export let dom = {
         }
 
 
-    }
+    },
+
 };
