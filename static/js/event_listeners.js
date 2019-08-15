@@ -69,6 +69,13 @@ export const listeners = {
         listeners.customEventListener('.board-rename-input', 'keydown', function(event){
             callback(event)
         })
+    },
+
+    deleteCard: function (callback) {
+        listeners.customEventListener('.card-remove', 'click', function (event) {
+            callback(event)
+        })
+
     }
 
 };

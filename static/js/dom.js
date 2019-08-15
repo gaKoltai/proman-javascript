@@ -11,6 +11,7 @@ export let dom = {
         this.deleteBoard();
         this.createCard();
         this.renameBoard();
+        this.deleteCard();
     },
     loadBoards: function () {
         // retrieves boards and makes showBoards called
@@ -172,6 +173,7 @@ export let dom = {
         const columnToPopulate = document.querySelector(`[data-status-id='${card.status_id}']`);
         const title = clone.querySelector('.card-title');
 
+        clone.querySelector('.card').setAttribute('data-card-id', `${card.id}`);
         title.textContent = `${card.title}`;
         columnToPopulate.appendChild(clone)
 
@@ -229,6 +231,25 @@ export let dom = {
             })
         })
 
+
+    },
+
+
+    deleteCard: function() {
+        listeners.deleteCard(function (event) {
+
+            const card = event.target.parentElement;
+            const cardId = card.dataset.cardId;
+            const boardId = card.parentElement.parentElement.parentElement.parentElement.dataset.id;
+
+            dataHandler.deleteCard(cardId, function () {
+                dom.loadCards(boardId)
+
+            })
+
+
+
+        })
 
     },
 
