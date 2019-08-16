@@ -15,7 +15,7 @@ export let listeners = {
                 }
 
             },
-            true)
+            false)
     },
 
     deleteBoard: function (callback) {

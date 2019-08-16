@@ -152,12 +152,12 @@ export let dom = {
 
         listeners.createCard(function (event) {
 
-            let board = event.target.parentElement;
-            let boardColumns = board.parentElement.querySelector('.board-columns');
-            let inputField = board.querySelector('.card-create-input');
-            let addCardIcon = board.querySelector('.card-add-btn');
-            let boardId = board.parentElement.dataset.id;
-            let createButton = event.target;
+            const board = event.target.parentElement;
+            const boardColumns = board.parentElement.querySelector('.board-columns');
+            const inputField = board.querySelector('.card-create-input');
+            const addCardIcon = board.querySelector('.card-add-btn');
+            const boardId = board.parentElement.dataset.id;
+            const createButton = event.target;
 
             inputField.value = "";
             inputField.classList.remove('invisible');
@@ -166,7 +166,7 @@ export let dom = {
 
             listeners.sendNewCardsName(function (event) {
 
-                let newCardTitle = inputField.value;
+                const newCardTitle = inputField.value;
                 dataHandler.createNewCard(newCardTitle, boardId, function (cardId) {
                     dataHandler.getCard(cardId, function (card) {
                         dom.showCard(card, boardColumns)
